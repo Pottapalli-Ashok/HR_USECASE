@@ -17,4 +17,3 @@ langchain-openai
 docx2txt
 azure-search-documents
 azure-identity
-pywin32==310
