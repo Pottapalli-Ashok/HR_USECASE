@@ -17,3 +17,4 @@ langchain-openai
 docx2txt
 azure-search-documents
 azure-identity
+pythoncom
