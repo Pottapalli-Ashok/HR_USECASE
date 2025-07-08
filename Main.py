@@ -323,20 +323,20 @@ def main():
                         st.write(rewritten_content)
 
 
-            # Send Email Button
-            if candidate['score'] >= threshold:
-                button_key = f"send_email_{candidate['name']}"
-                if st.button(f"Send Interview Email to {candidate['name']}", key=button_key):
-                    candidate_email = candidate["documents"][0].metadata.get('candidate_email')
-                    if candidate_email:
-                        if candidate['name'] not in st.session_state.sent_emails:
-                            EmailSender.send_email(candidate['name'], candidate_email)
-                            st.session_state.sent_emails.add(candidate['name'])
-                            st.success(f"✅ Interview email sent to {candidate['name']} ({candidate_email})")
-                        else:
-                            st.info(f"📨 Email already sent to {candidate['name']}")
-                    else:
-                        st.warning("⚠️ Email not found in candidate metadata.")
+            # # Send Email Button
+            # if candidate['score'] >= threshold:
+            #     button_key = f"send_email_{candidate['name']}"
+            #     if st.button(f"Send Interview Email to {candidate['name']}", key=button_key):
+            #         candidate_email = candidate["documents"][0].metadata.get('candidate_email')
+            #         if candidate_email:
+            #             if candidate['name'] not in st.session_state.sent_emails:
+            #                 EmailSender.send_email(candidate['name'], candidate_email)
+            #                 st.session_state.sent_emails.add(candidate['name'])
+            #                 st.success(f"✅ Interview email sent to {candidate['name']} ({candidate_email})")
+            #             else:
+            #                 st.info(f"📨 Email already sent to {candidate['name']}")
+            #         else:
+            #             st.warning("⚠️ Email not found in candidate metadata.")
 
 
 if __name__ == "__main__":
