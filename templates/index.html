@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🤖 Talent Acquisition Specialist</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: white;
+            position: relative;
+        }
+
+        img.logo {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            max-height: 40px;
+            width: auto;
+            object-fit: contain;
+            z-index: 1000;
+        }
+
+        header {
+            margin-top: 30px;
+            padding: 0 20px;
+            text-align: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #222;
+        }
+
+        header p {
+            margin: 5px 0 30px 0;
+            font-size: 1.1rem;
+            color: #32CD32; /* Light green */
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-bottom: 40px;
+        }
+
+        .jd-container {
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        button {
+            margin-top: 20px;
+            background-color: #0d6efd;
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0b5ed7;
+        }
+    </style>
+</head>
+<body>
+
+    <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/NTT_Data_2025.svg/960px-NTT_Data_2025.svg.png" alt="NTT DATA" />
+
+    <header>
+        <h1>🤖 Talent Acquisition Specialist</h1>
+        <p>Welcome to the AI-powered Talent Acquisition Specialist!</p>
+    </header>
+
+    <main>
+        <div class="jd-container">
+            <h2>📝 Enter Job Description</h2>
+            <form method="POST">
+                <textarea name="jd" rows="10" cols="60" placeholder="Enter the job description here..." required></textarea><br><br>
+                <button type="submit">Start Interview</button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

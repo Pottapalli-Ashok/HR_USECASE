@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Bot - Question {{ qnum }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        p strong {
+            display: block;
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #start-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #start-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        #answerForm button[type="submit"] {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        #status {
+            margin-top: 15px;
+            color: #555;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Question {{ qnum }} of {{ total }}:</h2>
+        <p><strong>{{ question }}</strong></p>
+
+        <form method="POST" id="answerForm">
+            <label>Your Answer:</label>
+            <textarea id="answer" name="answer" rows="5" required readonly></textarea>
+
+            <div class="button-group">
+                <button type="button" id="start-btn">🎤 Speak</button>
+                <button type="button" id="stop-btn" disabled>🛑 Stop</button>
+                <button type="submit">Submit Answer</button>
+            </div>
+        </form>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn'); // NEW
+        const answerTextarea = document.getElementById('answer');
+        const status = document.getElementById('status');
+        const questionText = `{{ question }}`;
+    
+        let isRecognizing = false;
+        let autoListenInterval = null;
+        const AUTO_START_TIME = 20;
+    
+        // Speak the question
+        window.onload = () => {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(questionText);
+                utterance.lang = 'en-US';
+                window.speechSynthesis.speak(utterance);
+                utterance.onend = () => {
+                    startAutoListenTimer();
+                };
+            } else {
+                status.textContent = 'Sorry, your browser does not support speech synthesis.';
+            }
+        };
+    
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            status.textContent = 'Sorry, your browser does not support Speech Recognition.';
+            startBtn.disabled = true;
+            stopBtn.disabled = true;
+        } else {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = true;
+            recognition.continuous = true;
+    
+            function startAutoListenTimer() {
+                let timeLeft = AUTO_START_TIME;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                startBtn.textContent = `🎤 Speak (Auto start in ${timeLeft}s)`;
+    
+                autoListenInterval = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft > 0) {
+                        startBtn.textContent = `🎤 Speak (Auto start in ${timeLeft}s)`;
+                    } else {
+                        clearInterval(autoListenInterval);
+                        startRecognition();
+                    }
+                }, 1000);
+            }
+    
+            function startRecognition() {
+                clearInterval(autoListenInterval);
+                answerTextarea.value = '';
+                isRecognizing = true;
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                recognition.start();
+                status.textContent = 'Listening... speak freely.';
+                startBtn.textContent = '🎤 Listening...';
+            }
+    
+            function stopRecognitionManually() {
+                isRecognizing = false;
+                recognition.stop();
+                stopBtn.disabled = true;
+                startBtn.disabled = false;
+                startBtn.textContent = '🎤 Speak';
+                status.textContent = 'Speech recognition manually stopped.';
+            }
+    
+            startBtn.addEventListener('click', () => {
+                recognition.stop(); // restart clean
+                startRecognition();
+            });
+    
+            stopBtn.addEventListener('click', stopRecognitionManually);
+    
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
+    
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+    
+                answerTextarea.value = finalTranscript + interimTranscript;
+            };
+    
+            recognition.onerror = (event) => {
+                status.textContent = 'Error: ' + event.error;
+                isRecognizing = false;
+                stopBtn.disabled = true;
+                startBtn.disabled = false;
+                startBtn.textContent = '🎤 Speak';
+            };
+    
+            recognition.onend = () => {
+                if (isRecognizing) {
+                    recognition.start(); // Resume on short pause
+                    status.textContent = 'Resuming listening after short pause...';
+                } else {
+                    stopBtn.disabled = true;
+                    startBtn.disabled = false;
+                    startBtn.textContent = '🎤 Speak';
+                    status.textContent = 'Speech recognition stopped.';
+                }
+            };
+        }
+    </script>    
+</body>
+</html>
