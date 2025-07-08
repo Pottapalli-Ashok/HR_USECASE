@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 
 from Services.pdf_processor import PDFProcessor
-from Services.email_sender import EmailSender
+# from Services.email_sender import EmailSender
 from Services.llm_handler import LLMHandler
 from Services.candidate_scorer import Candidate
 from Services.cache_handler import CacheHandler
