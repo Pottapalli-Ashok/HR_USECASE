@@ -6,7 +6,6 @@ langchain-huggingface
 langchain-community
 langchain-groq
 sentence-transformers
-faiss-cpu
 pypdf
 python-docx
 pyttsx3
