@@ -9,8 +9,6 @@ sentence-transformers
 faiss-cpu
 pypdf
 python-docx
-pywin32
-SpeechRecognition
 pyttsx3
 requests
 speechrecognition
